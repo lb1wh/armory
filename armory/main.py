@@ -28,14 +28,19 @@ class TextInputPopup(Popup):
         self.title = ""
         self.text_box = BoxLayout(orientation="vertical")
         self.text_input = TextInput(text=self.obj_text)
+
+        self.buttons_box = BoxLayout(orientation="horizontal")
+
         self.save_button = Button(size_hint=(1, 0.2), text="Save changes")
         self.save_button.bind(on_press=self.save_button_press)
         self.cancel_button = Button(size_hint=(1, 0.2), text="Cancel changes")
         self.cancel_button.bind(on_press=self.dismiss)
 
+        self.buttons_box.add_widget(self.save_button)
+        self.buttons_box.add_widget(self.cancel_button)
+
         self.text_box.add_widget(self.text_input)
-        self.text_box.add_widget(self.save_button)
-        self.text_box.add_widget(self.cancel_button)
+        self.text_box.add_widget(self.buttons_box)
         self.add_widget(self.text_box)
 
     def save_button_press(self, instance):
@@ -90,8 +95,8 @@ class SelectableButton(RecycleDataViewBehavior, Button):
         popup = TextInputPopup(self)
         popup.open()
 
-    def update_changes(self, txt):
-        self.text = txt
+    def update_changes(self, text):
+        self.text = text
 
 @final
 class Armory(BoxLayout):
