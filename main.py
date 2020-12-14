@@ -104,11 +104,11 @@ class Armory(BoxLayout):
         # Item header bar
         item_header = GridLayout(size_hint=(1, None), size_hint_y=None, height=25, cols=3)
         item_name = Label(text="Name")
-        item_notes = Label(text="Notes")
         item_quality = Label(text="Quality")
+        item_notes = Label(text="Notes")
         item_header.add_widget(item_name)
-        item_header.add_widget(item_notes)
         item_header.add_widget(item_quality)
+        item_header.add_widget(item_notes)
 
         # Populate table
         self._get_items()
@@ -116,7 +116,6 @@ class Armory(BoxLayout):
         # Item list
         item_list = BoxLayout()
         recycle_view = RecycleView()
-
         recycle_view.add_widget(SelectableRecycleGridLayout())
         recycle_view.data=[{"text": str(x)} for x in self.items]
         recycle_view.orientation = "vertical"
