@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+"""
+Initiate the Kivy main loop.
+"""
+
+from typing import final
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
@@ -13,15 +20,15 @@ from kivy.properties import ListProperty, BooleanProperty, ObjectProperty, Strin
 from kivy.uix.popup import Popup
 from kivy.graphics import Color, Rectangle
 
-from typing import final
 
 @final
 class TextInputPopup(Popup):
+    """Popup that is created when clicking an inventory element."""
     obj = ObjectProperty(None)
     obj_text = StringProperty("")
 
     def __init__(self, obj, **kwargs):
-        super(TextInputPopup, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.obj = obj
         self.obj_text = obj.text
 
@@ -44,6 +51,7 @@ class TextInputPopup(Popup):
         self.add_widget(self.text_box)
 
     def save_button_press(self, instance):
+        """Called when clicking the save button."""
         self.obj.update_changes(self.text_input.text)
         self.dismiss()
 
@@ -66,7 +74,13 @@ class SelectableButton(RecycleDataViewBehavior, Button):
     selectable = BooleanProperty(True)
 
     def __init__(self, **kwargs):
-        super(Button, self).__init__(**kwargs)
+        super().__init__(**kwargs)
+
+        # Truncate the text that is displayed on buttons
+        self.text_size = (200, None)
+        self.halign = "center"
+        self.shorten_from = "right"
+        self.shorten = True
 
         with self.canvas.before:
             if self.selected:
@@ -78,32 +92,36 @@ class SelectableButton(RecycleDataViewBehavior, Button):
     def refresh_view_attrs(self, rv, index, data):
         """Catch and handle the view changes"""
         self.index = index
-        return super(SelectableButton, self).refresh_view_attrs(rv, index, data)
+        return super().refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
         """Add selection on touch down"""
-        if super(SelectableButton, self).on_touch_down(touch):
+        if super().on_touch_down(touch):
             return True
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)
+        return False
 
     def apply_selection(self, rv, index, is_selected):
         """Respond to the selection of items in the view"""
         self.selected = is_selected
 
     def on_press(self):
+        """Call when button is pressed."""
         popup = TextInputPopup(self)
         popup.open()
 
     def update_changes(self, text):
+        """Call when saving."""
         self.text = text
 
 @final
 class Armory(BoxLayout):
+    """The starting point of the app."""
     items = ListProperty([])
 
     def __init__(self, **kwargs):
-        super(Armory, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.orientation = "vertical"
 
         # Item header bar
@@ -131,6 +149,7 @@ class Armory(BoxLayout):
         self.add_widget(item_list)
 
     def _get_items(self):
+        """Populate the list of items with elements from the DB"""
         # Temporary DB mock data
         data = [["foo", "bar"],
                 ["baz", "foo"],
@@ -142,9 +161,11 @@ class Armory(BoxLayout):
 
 @final
 class ArmoryApp(App):
+    """Main entry point into the Kivy main loop."""
     title = "Armory v0.1"
 
     def build(self):
+        self.icon = "../assets/shield.ico"
         return Armory()
 
 if __name__ == "__main__":
