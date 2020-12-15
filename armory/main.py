@@ -126,10 +126,10 @@ class Armory(BoxLayout):
 
         # Item header bar
         item_header = GridLayout(size_hint=(1, None), size_hint_y=None, height=25, cols=4)
-        item_name = Label(text="Name")
-        item_reqs = Label(text="Requirements")
-        item_quality = Label(text="Quality")
-        item_notes = Label(text="Notes")
+        item_name = Label(text="Name", bold=True)
+        item_reqs = Label(text="Requirements", bold=True)
+        item_quality = Label(text="Quality", bold=True)
+        item_notes = Label(text="Notes", bold=True)
         item_header.add_widget(item_name)
         item_header.add_widget(item_reqs)
         item_header.add_widget(item_quality)
