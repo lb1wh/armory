@@ -1,0 +1,13 @@
+[project]
+name = "armory-lb1wh"
+version = "0.1"
+description = "MUD inventory application"
+authors = ["Dag Henrik Fjær <dhf@hydra.org>"]
+license = "MPL-2.0"
+readme = "README.md"
+python = "^3.8"
+repository = "https://github.com/lb1wh/armory"
+
+[dependencies]
+
+[dev-dependencies]
