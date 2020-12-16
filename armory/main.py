@@ -64,7 +64,7 @@ class SelectableRecycleGridLayout(FocusBehavior, LayoutSelectionBehavior,
     def __init__(self, **kwargs):
         super(SelectableRecycleGridLayout, self).__init__(
             default_size=(0, 28), default_size_hint=(1, None),
-            touch_multiselect=True, multiselect=True, cols=4,
+            touch_multiselect=True, multiselect=True, cols=5,
             height=self.minimum_height, **kwargs)
 
 @final
@@ -126,14 +126,16 @@ class Armory(BoxLayout):
         self.orientation = "vertical"
 
         # Item header bar
-        item_header = GridLayout(size_hint=(1, None), size_hint_y=None, height=25, cols=4)
+        item_header = GridLayout(size_hint=(1, None), size_hint_y=None, height=25, cols=5)
         item_name = Label(text="Name", bold=True)
         item_reqs = Label(text="Requirements", bold=True)
         item_quality = Label(text="Quality", bold=True)
+        item_location = Label(text="Location", bold=True)
         item_notes = Label(text="Notes", bold=True)
         item_header.add_widget(item_name)
         item_header.add_widget(item_reqs)
         item_header.add_widget(item_quality)
+        item_header.add_widget(item_location)
         item_header.add_widget(item_notes)
 
         # Populate table
