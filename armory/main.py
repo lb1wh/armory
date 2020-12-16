@@ -19,6 +19,7 @@ from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import ListProperty, BooleanProperty, ObjectProperty, StringProperty
 from kivy.uix.popup import Popup
 from kivy.graphics import Color, Rectangle
+from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem, TabbedPanelHeader
 
 
 @final
@@ -155,11 +156,49 @@ class Armory(BoxLayout):
         # Temporary DB mock data
         data = [["foo", "bar"],
                 ["baz", "foo"],
+                ["baz", "foo"],
+                ["baz", "foo"],
+                ["baz", "foo"],
+                ["baz", "foo"],
+                ["baz", "foo"],
+                ["baz", "foo"],
+                ["baz", "foo"],
                 ["bar", "baz"]]
 
         for row in data:
             for item in row:
                 self.items.append(item)
+
+@final
+class TabbedArmory(TabbedPanel):
+    """Create a tab per item type."""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        default = self._add_tab("Ring", Armory(), self)
+
+        self._add_tab("Amulet", Armory(), self)
+        self._add_tab("Badge", Armory(), self)
+        self._add_tab("Cloak", Armory(), self)
+        self._add_tab("Plate", Armory(), self)
+        self._add_tab("Helmet", Armory(), self)
+        self._add_tab("Gloves", Armory(), self)
+        self._add_tab("Boots", Armory(), self)
+        self._add_tab("Belt", Armory(), self)
+        self._add_tab("Bracelets", Armory(), self)
+        self._add_tab("Trousers", Armory(), self)
+        self._add_tab("Shield", Armory(), self)
+        self._add_tab("Skins", Armory(), self)
+
+        self.do_default_tab = True
+        self.default_tab = default
+
+    def _add_tab(self, label, content, parent_widget):
+        """Add a tab to the top panel."""
+        new_tab = TabbedPanelHeader(text=label)
+        new_tab.content = content
+        parent_widget.add_widget(new_tab)
+        return new_tab
 
 @final
 class ArmoryApp(App):
@@ -168,7 +207,7 @@ class ArmoryApp(App):
 
     def build(self):
         self.icon = "../assets/shield.ico"
-        return Armory()
+        return TabbedArmory()
 
 if __name__ == "__main__":
     ArmoryApp().run()
