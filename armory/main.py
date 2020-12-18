@@ -21,6 +21,8 @@ from kivy.uix.popup import Popup
 from kivy.graphics import Color, Rectangle
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem, TabbedPanelHeader
 
+# Debugging
+from kivy.logger import Logger
 
 @final
 class TextInputPopup(Popup):
@@ -156,16 +158,7 @@ class Armory(BoxLayout):
     def _get_items(self):
         """Populate the list of items with elements from the DB"""
         # Temporary DB mock data
-        data = [["foo", "bar"],
-                ["baz", "foo"],
-                ["baz", "foo"],
-                ["baz", "foo"],
-                ["baz", "foo"],
-                ["baz", "foo"],
-                ["baz", "foo"],
-                ["baz", "foo"],
-                ["baz", "foo"],
-                ["bar", "baz"]]
+        data = [["foo", "bar"] for x in range(40)]
 
         for row in data:
             for item in row:
@@ -177,7 +170,7 @@ class TabbedArmory(TabbedPanel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        default = self._add_tab("Ring", Armory(), self)
+        ring_tab = self._add_tab("Ring", Armory(), self)
 
         self._add_tab("Amulet", Armory(), self)
         self._add_tab("Badge", Armory(), self)
@@ -192,8 +185,7 @@ class TabbedArmory(TabbedPanel):
         self._add_tab("Shield", Armory(), self)
         self._add_tab("Skins", Armory(), self)
 
-        self.do_default_tab = True
-        self.default_tab = default
+        self.default_tab = ring_tab
 
     def _add_tab(self, label, content, parent_widget):
         """Add a tab to the top panel."""
