@@ -5,6 +5,9 @@ Initiate the Kivy main loop.
 
 from typing import final
 
+import storage
+import utils
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
@@ -19,7 +22,6 @@ from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.properties import ListProperty, BooleanProperty, ObjectProperty, StringProperty
 from kivy.uix.popup import Popup
 from kivy.graphics import Color, Rectangle
-from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem, TabbedPanelHeader
 
 # Debugging
 from kivy.logger import Logger
@@ -80,7 +82,7 @@ class SelectableButton(RecycleDataViewBehavior, Button):
         super().__init__(**kwargs)
 
         # Truncate the text that is displayed on buttons
-        self.text_size = (200, None)
+        self.text_size = (100, None) # TODO: Make this auto-scale
         self.halign = "center"
         self.shorten_from = "right"
         self.shorten = True
@@ -127,8 +129,16 @@ class Armory(BoxLayout):
         super().__init__(**kwargs)
         self.orientation = "vertical"
 
+        config = utils.read_config()
+
+        # Armor item button bar
+        armor_button_bar = self._create_button_bar(config["armor"])
+
+        # Weapon button bar
+        weapon_button_bar = self._create_button_bar(config["weapons"])
+
         # Item header bar
-        item_header = GridLayout(size_hint=(1, None), size_hint_y=None, height=25, cols=5)
+        item_header = BoxLayout(size_hint=(1, None), size_hint_y=None, height=25)
         item_name = Label(text="Name", bold=True)
         item_reqs = Label(text="Requirements", bold=True)
         item_quality = Label(text="Quality", bold=True)
@@ -140,8 +150,8 @@ class Armory(BoxLayout):
         item_header.add_widget(item_location)
         item_header.add_widget(item_notes)
 
-        # Populate table
-        self._get_items()
+        # Populate item table - default item view
+        armor_button_bar.children[0].trigger_action()
 
         # Item list
         item_list = BoxLayout()
@@ -152,11 +162,15 @@ class Armory(BoxLayout):
         recycle_view.viewclass = "SelectableButton"
         item_list.add_widget(recycle_view)
 
+        self.add_widget(armor_button_bar)
+        self.add_widget(weapon_button_bar)
         self.add_widget(item_header)
         self.add_widget(item_list)
 
-    def _get_items(self):
+    def _get_items(self, instance):
         """Populate the list of items with elements from the DB"""
+        item_type = instance.text.lower()
+
         # Temporary DB mock data
         data = [["foo", "bar"] for x in range(40)]
 
@@ -164,35 +178,16 @@ class Armory(BoxLayout):
             for item in row:
                 self.items.append(item)
 
-@final
-class TabbedArmory(TabbedPanel):
-    """Create a tab per item type."""
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def _create_button_bar(self, items):
+        """Create a bar with buttons for given item types."""
+        item_button_bar = BoxLayout(size_hint=(1, None), size_hint_y=None, height=25)
 
-        ring_tab = self._add_tab("Ring", Armory(), self)
+        for item in items:
+            button = Button(text=item.capitalize())
+            button.bind(on_press=self._get_items)
+            item_button_bar.add_widget(button)
 
-        self._add_tab("Amulet", Armory(), self)
-        self._add_tab("Badge", Armory(), self)
-        self._add_tab("Cloak", Armory(), self)
-        self._add_tab("Plate", Armory(), self)
-        self._add_tab("Helmet", Armory(), self)
-        self._add_tab("Gloves", Armory(), self)
-        self._add_tab("Boots", Armory(), self)
-        self._add_tab("Belt", Armory(), self)
-        self._add_tab("Bracelets", Armory(), self)
-        self._add_tab("Trousers", Armory(), self)
-        self._add_tab("Shield", Armory(), self)
-        self._add_tab("Skins", Armory(), self)
-
-        self.default_tab = ring_tab
-
-    def _add_tab(self, label, content, parent_widget):
-        """Add a tab to the top panel."""
-        new_tab = TabbedPanelHeader(text=label)
-        new_tab.content = content
-        parent_widget.add_widget(new_tab)
-        return new_tab
+        return item_button_bar
 
 @final
 class ArmoryApp(App):
@@ -201,7 +196,7 @@ class ArmoryApp(App):
 
     def build(self):
         self.icon = "../assets/shield.ico"
-        return TabbedArmory()
+        return Armory()
 
 if __name__ == "__main__":
     ArmoryApp().run()
