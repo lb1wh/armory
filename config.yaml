@@ -1,0 +1,19 @@
+data:
+ - "data/armory.db"
+
+armor:
+- ring
+- amulet
+- badge
+- cloak
+- plate
+- helmet
+- bracers
+
+weapons:
+- club
+- dagger
+- sword
+- scythe
+- spear
+- staff
